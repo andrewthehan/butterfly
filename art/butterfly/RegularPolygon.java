@@ -1,10 +1,6 @@
 
 package art.butterfly;
 
-import camickr.ComponentMover;
-import han.io.FileManager;
-import han.util.DialogManager;
-
 import java.awt.geom.Point2D;
 import java.awt.Graphics;
 import java.io.File;
@@ -15,62 +11,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class RegularPolygon extends JPanel{
-	private static int WIDTH;
-	private static int HEIGHT;
-	private static double RATIO;
-	private static int NUMBER_OF_SHAPES;
-	private static double INITIAL_RADIUS;
+	private static int WIDTH = 600;
+	private static int HEIGHT = 600;
+	private static double RATIO = 100;
+	private static int NUMBER_OF_SHAPES = 1000;
+	private static double INITIAL_RADIUS = 10;
 	private Point2D.Double[] points;
-	
-	static{
-		File file = new File("data.txt");
-		String[] data = FileManager.read(file);
-		if(data == null){
-			DialogManager.message("Polygon Art", "Creating new data file. Press OK to continue...");
-			try{
-				file.createNewFile();
-			}
-			catch(Exception e){
-				DialogManager.message("Error!", "Unable to create necessary data files!");
-				System.exit(-1);
-			}
-			FileManager.append(file, "WIDTH = 600");
-			FileManager.append(file, "HEIGHT = 600");
-			FileManager.append(file, "RATIO = 100");
-			FileManager.append(file, "NUMBER OF SHAPES = 1000");
-			FileManager.append(file, "INITIAL RADIUS = 10");
-			data = FileManager.read(file);
-		}
-		for(String d : data){
-			String[] values = d.split("=");
-			if(values.length != 2){
-				DialogManager.message("Error!", "Corrupted File!");
-				System.exit(-1);
-			}
-			String name = values[0].trim();
-			int value = Integer.parseInt(values[1].trim());
-			switch(name){
-				case "WIDTH":
-					WIDTH = value;
-					break;
-				case "HEIGHT":
-					HEIGHT = value;
-					break;
-				case "RATIO":
-					RATIO = value;
-					break;
-				case "NUMBER OF SHAPES":
-					NUMBER_OF_SHAPES = value;
-					break;
-				case "INITIAL RADIUS":
-					INITIAL_RADIUS = value;
-					break;
-				default:
-					DialogManager.message("Error!", "Corrupted File!");
-					System.exit(-1);
-			}
-		}
-	}
 	
 	public static void main(String[] args){
 		Point2D.Double center = new Point2D.Double(WIDTH / 2, HEIGHT / 2);
@@ -90,8 +36,6 @@ public class RegularPolygon extends JPanel{
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		polygons.forEach(p -> f.add(p));
-		
-		new ComponentMover(f, f);
 		
 		f.setVisible(true);
 	}
