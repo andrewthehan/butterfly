@@ -35,7 +35,7 @@ public class RegularPolygon extends JPanel{
 		f.setLayout(null);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		polygons.forEach(p -> f.add(p));
+		polygons.forEach(f::add);
 		
 		f.setVisible(true);
 	}
