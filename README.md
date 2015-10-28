@@ -1,3 +1,5 @@
+Personal Project (Started 2015 February)
+
 # butterfly
 An artwork utilizing regular polygons.
 
