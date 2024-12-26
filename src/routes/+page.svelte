@@ -40,7 +40,7 @@
   />
   <meta
     property="og:image"
-    content="https://raw.githubusercontent.com/andrewthehan/butterfly/master/butterfly.png"
+    content="https://raw.githubusercontent.com/andrewthehan/butterfly/master/static/butterfly-light.png"
   />
 </svelte:head>
 
