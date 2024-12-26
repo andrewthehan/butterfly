@@ -76,13 +76,6 @@
 </svg>
 
 <style>
-  :root {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-
   :global(html) {
     background-color: white;
   }
