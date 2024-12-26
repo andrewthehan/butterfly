@@ -1,6 +1,5 @@
-Personal Project (Started 2015 February)
+# Butterfly
 
-# butterfly
-An artwork utilizing regular polygons generated through [roots of unity](https://en.wikipedia.org/wiki/Root_of_unity).
+https://butterfly.andrewhan.dev
 
-![alt tag](https://raw.githubusercontent.com/andrewthehan/butterfly/master/butterfly.png)
+An artwork utilizing regular polygons generated through roots of unity.
