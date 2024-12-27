@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { ModeWatcher, toggleMode, mode } from "mode-watcher";
-
   type Point = { x: number; y: number };
 
   const width = 600;
@@ -12,19 +10,13 @@
   const count = 1000;
   const radiusRatio = 100;
 
-  function* radiiGenerator(
-    initialRadius: number,
-    radiusRatio: number,
-    count: number
-  ): Generator<number> {
-    let radius = initialRadius;
-    for (let i = 0; i < count; i++) {
-      yield radius;
-      radius += radiusRatio / radius;
-    }
-  }
-
-  const radii = Array.from(radiiGenerator(initialRadius, radiusRatio, count));
+  // The radius is calculated using the formula:
+  // f(x) = f(x - 1) + radiusRatio / f(x - 1) where f(1) = initialRadius
+  // Rewriting this in a non-recursive form, we get:
+  // f(x) = sqrt(initialRadius^2 + 2 * radiusRatio * (x - 1))
+  const radii = Array.from({ length: count }, (_, i) =>
+    Math.sqrt(initialRadius ** 2 + 2 * radiusRatio * i)
+  );
 </script>
 
 <svelte:head>
@@ -44,10 +36,6 @@
   />
 </svelte:head>
 
-<svelte:window on:click={toggleMode} />
-
-<ModeWatcher themeColors={{ dark: "black", light: "white" }} />
-
 {#snippet regularPolygon(center: Point, radius: number, sideCount: number)}
   {@const angle = (2 * Math.PI) / sideCount}
   {@const points = Array.from({ length: sideCount }, (_, i) => {
@@ -57,30 +45,122 @@
   }).join(" ")}
   <polygon
     {points}
-    stroke={$mode === "light" ? "white" : "black"}
+    stroke="white"
     stroke-width="1"
     fill="none"
     shape-rendering="crispEdges"
   />
 {/snippet}
 
-<svg {height} {width} xmlns="http://www.w3.org/2000/svg">
-  <rect
-    width="100%"
-    height="100%"
-    fill={$mode === "light" ? "black" : "white"}
-  />
-  {#each Array(count) as _, i}
-    {@render regularPolygon(center, radii[i], i + 3)}
-  {/each}
-</svg>
+<section>
+  <svg {height} {width} xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="black" />
+    {#each Array(count) as _, i}
+      {@render regularPolygon(center, radii[i], i + 3)}
+    {/each}
+  </svg>
+  <a
+    class="label"
+    href="https://github.com/andrewthehan/butterfly"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <h2>Andrew Han</h2>
+
+    <b>Butterfly, 2015</b>
+
+    <br />
+    <br />
+
+    <b><i>An artwork utilizing regular polygons</i></b>
+  </a>
+</section>
 
 <style>
   :global(html) {
-    background-color: white;
+    background: #999;
   }
 
-  :global(html.dark) {
-    background-color: black;
+  :root {
+    --light-swing-speed: 2s;
+    --light-width: 700px;
+    --light-sway: 20px;
+  }
+
+  section {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  section:after {
+    content: "";
+    position: absolute;
+    width: var(--light-width);
+    transform-origin: top center;
+    background: linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.4));
+    height: 100%;
+    filter: blur(16px);
+    animation: lightMovement var(--light-swing-speed) infinite alternate
+      ease-in-out;
+    pointer-events: none;
+  }
+
+  @keyframes lightMovement {
+    0% {
+      left: calc(50% - var(--light-width) / 2 - var(--light-sway));
+    }
+
+    100% {
+      left: calc(50% - var(--light-width) / 2 + var(--light-sway));
+    }
+  }
+
+  svg {
+    margin: 16px;
+    border: 16px solid;
+    border-top-color: #333;
+    border-bottom-color: #333;
+    border-right-color: black;
+    border-left-color: black;
+
+    animation: artShadowMovement var(--light-swing-speed) infinite alternate
+      ease-in-out;
+  }
+
+  @keyframes artShadowMovement {
+    0% {
+      box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    100% {
+      box-shadow: -10px 10px 4px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  .label {
+    font-family: "Trebuchet MS", sans-serif;
+    text-decoration: none;
+    color: black;
+    background: white;
+    padding: 24px 80px 80px 24px;
+
+    animation: labelShadowMovement var(--light-swing-speed) infinite alternate
+      ease-in-out;
+  }
+
+  @keyframes labelShadowMovement {
+    0% {
+      box-shadow: 6px 6px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    100% {
+      box-shadow: -6px 6px 4px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  h2 {
+    margin: 0;
   }
 </style>
