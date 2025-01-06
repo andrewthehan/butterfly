@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { draw } from "svelte/transition";
+
   type Point = { x: number; y: number };
 
   const width = 600;
@@ -7,6 +10,7 @@
   const center: Point = { x: width / 2, y: height / 2 };
 
   const initialRadius = 10;
+  const initialSideCount = 3;
   const count = 1000;
   const radiusRatio = 100;
 
@@ -17,6 +21,12 @@
   const radii = Array.from({ length: count }, (_, i) =>
     Math.sqrt(initialRadius ** 2 + 2 * radiusRatio * i)
   );
+
+  let render = $state(false);
+
+  onMount(() => {
+    render = true;
+  });
 </script>
 
 <svelte:head>
@@ -43,7 +53,12 @@
     const y = center.y + Math.round(radius * Math.cos(i * angle));
     return `${x},${y}`;
   }).join(" ")}
+  {@const index = sideCount - initialSideCount}
   <polygon
+    transition:draw|global={{
+      duration: 1000 / (index + 1), // C / x
+      delay: 1000 * Math.log(index + 1), // Integral of C / x = C * ln(x)
+    }}
     {points}
     stroke="white"
     stroke-width="1"
@@ -55,9 +70,11 @@
 <section>
   <svg {height} {width} xmlns="http://www.w3.org/2000/svg">
     <rect width="100%" height="100%" fill="black" />
-    {#each Array(count) as _, i}
-      {@render regularPolygon(center, radii[i], i + 3)}
-    {/each}
+    {#if render}
+      {#each Array(count) as _, i}
+        {@render regularPolygon(center, radii[i], i + initialSideCount)}
+      {/each}
+    {/if}
   </svg>
   <a
     class="label"
